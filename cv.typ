@@ -1,5 +1,22 @@
-//TODO add toml config
-#let resume_config = state("resume_config", (theme: (line: red, accent: blue), block_spacing: (above: 0.7em, below: 1em)))
+#let resume_config = state("resume_config", (
+  theme: (line: red, accent: blue),
+  block_spacing: (above: 0.7em, below: 1em),
+  font: (family: "New Computer Modern", size: 11pt),
+))
+
+#let make_config(
+  line: red,
+  accent: blue,
+  block_above: 0.7em,
+  block_below: 1em,
+  font: "New Computer Modern",
+  font_size: 11pt,
+) = (
+  theme: (line: line, accent: accent),
+  block_spacing: (above: block_above, below: block_below),
+  font: (family: font, size: font_size),
+)
+
 #let icons = (
   phone: "phone.svg",
   email: "email.svg",
@@ -9,12 +26,30 @@
   location: "location.svg",
 )
 
-#let set_config(body: (theme: none, block_spacing: none)) = {
+#let set_config(body: (theme: none, block_spacing: none, font: none)) = {
   resume_config.update(old => (
-    theme: if body.theme != none { body.theme } else { old.theme },
-    block_spacing: if body.block_spacing != none { body.block_spacing } else { old.block_spacing },
+    theme: if body.theme != none {
+      (
+        line: if body.theme.at("line", default: none) != none { body.theme.line } else { old.theme.line },
+        accent: if body.theme.at("accent", default: none) != none { body.theme.accent } else { old.theme.accent },
+      )
+    } else { old.theme },
+    block_spacing: if body.block_spacing != none {
+      (
+        above: if body.block_spacing.at("above", default: none) != none { body.block_spacing.above } else { old.block_spacing.above },
+        below: if body.block_spacing.at("below", default: none) != none { body.block_spacing.below } else { old.block_spacing.below },
+      )
+    } else { old.block_spacing },
+    font: if body.font != none {
+      (
+        family: if body.font.at("family", default: none) != none { body.font.family } else { old.font.family },
+        size: if body.font.at("size", default: none) != none { body.font.size } else { old.font.size },
+      )
+    } else { old.font },
   ))
 }
+
+#let apply_config(cfg) = set_config(body: cfg)
 
 #let edit_date() = {
   let date = datetime.today().display("[month repr:long] [year]")
@@ -36,8 +71,11 @@
   })
   edit_date()
 
-  set text(size: 11pt)
-  body
+  context {
+    let cfg = resume_config.get()
+    set text(font: cfg.font.family, size: cfg.font.size)
+    body
+  }
 }
 
 #let center_alignment(body) = {
@@ -57,16 +95,11 @@
   }
 }
 
-#let contact_item(image, content, link: none, image_baseline: 0.15em, image_height: 0.8em) = {
-  box(baseline: 0.20em, std.image("images/" + image), height: 1em)
-  h(0.2em)
-  if link != none {
+#let contact_item(image, content, link: none, image_baseline: 0.15em, image_height: 0.8em) = box[#box(baseline: 0.20em, std.image("images/" + image), height: 1em)#h(0.2em)#if link != none {
     std.link(link)[#content]
   } else {
     content
-  }
-  h(0.5em)
-}
+  }#h(0.5em)]
 
 #let create_link(link, email: false) = {
   if email == true {
@@ -190,3 +223,4 @@
   item_block()
   pad(left: 1em, right: 0.5em, block[ *#lang*: #level ])
 }
+

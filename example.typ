@@ -1,6 +1,6 @@
 #import "cv.typ": *
 
-#set_config(body: (theme: (line: red, accent: blue), block_spacing: none))
+#apply_config(make_config(accent: blue, line: red, font_size: 11pt))
 
 #let contact = (
   name: "Jake Ryan",
@@ -82,7 +82,7 @@
   skills: "Python, Flask, React, PostgreSQL, Docker",
   date: "June 2020 - Present",
   [Developed a full-stack web application using with Flask serving a REST API with React as the frontend],
-  [Implemented GitHub OAuth to get data from user’s repositories],
+  [Implemented GitHub OAuth to get data from user's repositories],
   [Visualized GitHub data to show collaboration],
   [Used Celery and Redis for asynchronous tasks],
 )
