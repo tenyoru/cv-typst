@@ -78,6 +78,10 @@
   }
 }
 
+#let create_link(link) = {
+  "https://" + link
+}
+
 #let center_alignment(body) = {
   align(center, body)
 }
@@ -87,11 +91,20 @@
   // v(-3pt)
 }
 
-#let name_header(name) = {
+#let name_header(name, link: none, github: "", linkedin: "", site: "") = {
   context {
     let cfg = resume_config.get()
+    let resolved_link = if link != none { link }
+      else if github != "" { create_link("github.com/" + github) }
+      else if linkedin != "" { create_link("linkedin.com/in/" + linkedin) }
+      else if site != "" { create_link(site) }
+      else { none }
     set text(size: 2.25em, fill: cfg.theme.accent)
-    [*#name*]
+    if resolved_link != none {
+      std.link(resolved_link)[*#name*]
+    } else {
+      [*#name*]
+    }
   }
 }
 
@@ -101,17 +114,10 @@
     content
   }#h(0.5em)]
 
-#let create_link(link, email: false) = {
-  if email == true {
-    return "mailto:" + link
-  }
-  return "https://" + link
-}
-
-#let header(name: "Jake Ryan", phone: "", email: "", linkedin: "", github: "", site: "", location: "") = {
+#let header(name: "Jake Ryan", link: none, phone: "", email: "", linkedin: "", github: "", site: "", location: "") = {
   center_alignment[
     #v(7pt)
-    #name_header(name)
+    #name_header(name, link: link, github: github, linkedin: linkedin, site: site)
     #v(-10pt)
   ]
 }
@@ -222,5 +228,25 @@
 #let lang_item(lang: "English", level: "Native") = {
   item_block()
   pad(left: 1em, right: 0.5em, block[ *#lang*: #level ])
+}
+
+#let github_item(username) = {
+  contact_item(icons.github, username, link: create_link("github.com/" + username))
+}
+
+#let linkedin_item(username) = {
+  contact_item(icons.linkedin, username, link: create_link("linkedin.com/in/" + username))
+}
+
+#let email_item(email) = {
+  contact_item(icons.email, email, link: "mailto:" + email)
+}
+
+#let phone_item(phone) = {
+  contact_item(icons.phone, phone, link: "tel:" + phone)
+}
+
+#let location_item(place) = {
+  contact_item(icons.location, place, link: "https://maps.google.com/?q=" + place)
 }
 

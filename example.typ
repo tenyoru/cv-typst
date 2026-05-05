@@ -6,22 +6,22 @@
   name: "Jake Ryan",
   phone: "123-456-7890",
   email: "jake@su.edu",
-  linkedin: "linkedin.com/in/jake",
-  github: "github.com/jake",
+  linkedin: "jake",
+  github: "jake",
   site: "example.com",
   location: "Brussels",
 )
 
 #show: resume
-#header(name: contact.name)
+#header(name: contact.name, github: contact.github, linkedin: contact.linkedin, site: contact.site)
 
 #contacts[
-  #contact_item(icons.location, contact.location)
-  #contact_item(icons.phone, contact.phone)
-  #contact_item(icons.email, contact.email, link: create_link(contact.email, email: true))
+  #location_item(contact.location)
+  #phone_item(contact.phone)
+  #email_item(contact.email)
   #contact_item(icons.site, contact.site, link: create_link(contact.site))
-  #contact_item(icons.linkedin, contact.linkedin, link: create_link(contact.linkedin))
-  #contact_item(icons.github, contact.github, link: create_link(contact.github))
+  #linkedin_item(contact.linkedin)
+  #github_item(contact.github)
 ]
 
 #resume_heading[Education]
